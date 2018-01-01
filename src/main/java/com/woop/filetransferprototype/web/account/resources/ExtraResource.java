@@ -25,7 +25,11 @@ public class ExtraResource {
 "	</head>\n" +
 "	<body>\n" +
 "		<form action=\"/app/accountcreate/1.0\" method=\"POST\" enctype=\"multipart/form-data\">\n" +
-"			<p><input type=\"Ваше имя\" name=\"user\"></p> " +
+"			<p>\n<b>Login: </b>\n" +
+"			<p><input name=\"login\">\n" +
+"			<p>\n<b>Password: </b>\n" +
+"                       <p><input type=\"password\" name=\"pass\"></p>\n" +
+"                       <p><input type=\"submit\" value=\"Create Account\"></p>" +
 "		</form>\n" +
 "	</body>\n" +
 "</html>")
@@ -36,18 +40,18 @@ public class ExtraResource {
     @Path("page/upload")
     @Consumes(MediaType.TEXT_HTML)
     public Response getPageUpload() {
-        return Response.ok().entity("	<head>\n" +
+        return Response.ok().entity(
+"<html>" +
+"	<head>\n" +
 "	</head>\n" +
-"	<body>\n" +
+"           <body>\n" +
 "		<form action=\"/app/upload/1.0\" method=\"POST\" enctype=\"multipart/form-data\">\n" +
-"			<p>\n" +
-"				<b>File: </b>\n" +
-"				<input type=\"file\" name=\"file\"  size=\"50\"/>\n" +
-"			</p>\n" +
-"			\n" +
+"			<p>\n<b>File: </b>\n" +
+"			<input type=\"file\" name=\"file\"  size=\"50\"/></p>\n" +
+"                       <p><input name=\"token\"></p>\n" +
 "			<input type=\"submit\" value=\"Upload It\">\n" +
 "		</form>\n" +
-"	</body>\n" +
+"           </body>\n" +
 "</html>")
                 .build();
     }
