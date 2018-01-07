@@ -5,6 +5,7 @@
  */
 package com.woop.filetransferprototype.application.config;
 
+import com.woop.filetransferprototype.web.account.exceptions.AccountExceptionMapper;
 import com.woop.filetransferprototype.web.account.resources.AccountCreateResource;
 import com.woop.filetransferprototype.web.fileupload.exceptions.FileUploadExceptionMapper;
 import com.woop.filetransferprototype.web.account.resources.ExtraResource;
@@ -19,11 +20,11 @@ import org.glassfish.jersey.server.ResourceConfig;
 
 public class ApplicationConfig extends ResourceConfig {
     public ApplicationConfig() {
-        super(
-                FileUploadResource.class,
+        super(FileUploadResource.class,
                 AccountCreateResource.class,
                 ExtraResource.class,
                 FileUploadExceptionMapper.class,
+                AccountExceptionMapper.class,
                 MultiPartFeature.class
         
         );

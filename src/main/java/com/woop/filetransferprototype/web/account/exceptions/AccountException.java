@@ -27,7 +27,7 @@ public class AccountException extends RuntimeException {
 
     public AccountException(ServiceError serviceError, String message, Throwable cause) {
         super(message, cause);
-
+        
         this.httpServiceError = createServiceError(serviceError);
     }
 

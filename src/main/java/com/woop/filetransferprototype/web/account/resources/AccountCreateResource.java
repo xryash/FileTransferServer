@@ -5,8 +5,11 @@
  */
 package com.woop.filetransferprototype.web.account.resources;
 
+import com.woop.filetransferprototype.cryptography.RandomString;
 import com.woop.filetransferprototype.cryptography.SHA256;
+import com.woop.filetransferprototype.cryptography.Token;
 import com.woop.filetransferprototype.local.entity.Account;
+import com.woop.filetransferprototype.local.entity.AccountData;
 import com.woop.filetransferprototype.web.account.hadler.IAccountCreateHandler;
 import com.woop.filetransferprototype.web.account.hadler.LocalStorageAccountCreateHandler;
 import com.woop.filetransferprototype.web.account.requests.AccountCreateRequest;
@@ -36,17 +39,17 @@ public class AccountCreateResource {
     
     
     @POST
-    @Path("accountcreate/1.0")
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Path("account/new/1.0")
+    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response accountCreate(
-                                 @QueryParam("login") String login,
-                                 @QueryParam("password") String password) {
+    public Response accountCreate(AccountData request) {
         
+        String login = request.getLogin();
+        String password = request.getPassword();
+        String salt = RandomString.generateRandomString(60);
+        String token = Token.generateToken(password,salt);
         
-        //String hash = SHA256.hash(login + password);
-        String token = UUID.randomUUID().toString();
-        Account account = new Account(login,password,token);
+        Account account = new Account(login,password,token,salt);
         AccountCreateRequest accountRequest = new AccountCreateRequest(account);
         AccountCreateResponse result = accountCreateHandler.handle(accountRequest);
         return Response

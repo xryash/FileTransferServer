@@ -19,13 +19,12 @@ public class AccountExceptionMapper implements javax.ws.rs.ext.ExceptionMapper<A
     private static final Logger logger = LoggerFactory.getLogger(AccountExceptionMapper.class);
 
     @Override
-    public Response toResponse(AccountException fileUploadException) {
+    public Response toResponse(AccountException accountException) {
 
         if(logger.isErrorEnabled()) {
-            logger.error("An error occured", fileUploadException);
+            logger.error("An error occured", accountException);
         }
-
-        HttpServiceError httpServiceError = fileUploadException.getHttpServiceError();
+        HttpServiceError httpServiceError = accountException.getHttpServiceError();
 
         return Response
                 .status(httpServiceError.getHttpStatusCode())

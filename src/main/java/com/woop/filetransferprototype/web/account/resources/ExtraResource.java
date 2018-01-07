@@ -18,17 +18,17 @@ import javax.ws.rs.core.Response;
 @Path("/")
 public class ExtraResource {
     @GET
-    @Path("page/accountcreate")
+    @Path("page/account/new")
     @Consumes(MediaType.TEXT_HTML)
     public Response getPageAccountCreate() {
         return Response.ok().entity("	<head>\n" +
 "	</head>\n" +
 "	<body>\n" +
-"		<form action=\"/app/accountcreate/1.0\" method=\"POST\" enctype=\"multipart/form-data\">\n" +
+"		<form action=\"/app/account/new/1.0\" method=\"POST\" enctype=\"multipart/form-data\">\n" +
 "			<p>\n<b>Login: </b>\n" +
 "			<p><input name=\"login\">\n" +
 "			<p>\n<b>Password: </b>\n" +
-"                       <p><input type=\"password\" name=\"pass\"></p>\n" +
+"                       <p><input name=\"password\"></p>\n" +
 "                       <p><input type=\"submit\" value=\"Create Account\"></p>" +
 "		</form>\n" +
 "	</body>\n" +

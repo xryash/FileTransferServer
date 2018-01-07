@@ -35,11 +35,11 @@ public class LocalStorageAccountRepository implements IAccountRepository {
             String login = rs.getString(2);
             String password = rs.getString(3);
             String token = rs.getString(4);
-            return new Account(id,login,password,token);
+            String salt = rs.getString(5);
+            return new Account(id,login,password,token,salt);
         } catch (SQLException ex) {
-            Logger.getLogger(LocalStorageAccountRepository.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
         }
-        return null;
     }
     
     public Account getById(int id) {
@@ -51,9 +51,8 @@ public class LocalStorageAccountRepository implements IAccountRepository {
             ResultSet rs = ps.executeQuery();
             return assembleAccount(rs);
         } catch (SQLException ex) {
-            Logger.getLogger(LocalStorageAccountRepository.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
         }
-        return null;
     }
 
     public Account getByLogin(String login) {
@@ -65,9 +64,8 @@ public class LocalStorageAccountRepository implements IAccountRepository {
             ResultSet rs = ps.executeQuery();
             return assembleAccount(rs);
         } catch (SQLException ex) {
-            Logger.getLogger(LocalStorageAccountRepository.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
         }
-        return null;
     }
     
     public Account getByToken(String token) {
@@ -79,26 +77,41 @@ public class LocalStorageAccountRepository implements IAccountRepository {
             ResultSet rs = ps.executeQuery();
             return assembleAccount(rs);
         } catch (SQLException ex) {
-            Logger.getLogger(LocalStorageAccountRepository.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
         }
-        return null;
+        
+    }
+    
+    public Account getByLoginAndPassword(String login, String password) {
+        try {
+                Connection connection = getSqliteConnection().getConnection();
+                String sql = "select * from accounts where login = ? and password = ?";
+                PreparedStatement ps = connection.prepareStatement(sql);
+                ps.setString(1, login);
+                ps.setString(2, password);
+                ResultSet rs = ps.executeQuery();
+                return assembleAccount(rs);
+            } catch (SQLException ex) {
+                return null;
+            }
     }
     
     public boolean save(Account entity) {
         try {
             Connection connection = getSqliteConnection().getConnection();
-            String sql = "insert into accounts values ( ?, ?, ?)";
+            String sql = "insert into accounts values ( ?, ?, ?, ?, ?)";
             PreparedStatement ps = connection.prepareStatement(sql);
-            ps.setString(1,entity.getLogin());
-            ps.setString(2,entity.getPassword());
-            ps.setString(3,entity.getToken());
+            //ps.setInt(1,0);
+            ps.setString(2,entity.getLogin());
+            ps.setString(3,entity.getPassword());
+            ps.setString(4,entity.getToken());
+            ps.setString(5,entity.getSalt());
             ps.executeUpdate();
             ps.close();
             return true;
         } catch (SQLException ex) {
-            Logger.getLogger(LocalStorageAccountRepository.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return false;
+            return false;
+        } 
     }
 
     public boolean remove(int id) {
@@ -111,8 +124,7 @@ public class LocalStorageAccountRepository implements IAccountRepository {
             ps.close();
             return true;
         } catch (SQLException ex) {
-            Logger.getLogger(LocalStorageAccountRepository.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
         }
-        return false;
     }
 }

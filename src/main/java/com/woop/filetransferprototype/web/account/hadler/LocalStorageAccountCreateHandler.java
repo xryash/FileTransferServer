@@ -27,19 +27,27 @@ public class LocalStorageAccountCreateHandler implements IAccountCreateHandler {
     
     
     public AccountCreateResponse handle(AccountCreateRequest request) {
-
+     
         if(request == null) {
-            throw new AccountException(new ServiceError("missingAccount", "Missing Account data"), String.format("Missing Parameter: request"));
+            throw new AccountException(new ServiceError("missingAccountError", "Missing Account data"), String.format("Missing Parameter: request"));
         }
-
+        
         Account account = request.getAccount();
 
         if(account == null) {
-            throw new AccountException(new ServiceError("missingAccount", "Missing Account data"), String.format("Missing Parameter: request.account"));
+            throw new AccountException(new ServiceError("missingAccountError", "Missing Account data"), String.format("Missing Parameter: request.account"));
+        }
+        
+        if(account.getLogin() == null) {
+            throw new AccountException(new ServiceError("missingAccountError", "Missing Account data"), String.format("Missing Parameter: account.login"));
+        }
+        
+        if(account.getPassword() == null) {
+            throw new AccountException(new ServiceError("missingAccountError", "Missing Account data"), String.format("Missing Parameter: account.password"));
         }
         
         if (accountRepository.getByLogin(account.getLogin()) != null){
-            throw new AccountException(new ServiceError("repeatingAccount", "Repeating Account data"), String.format("Repeating Parameter: request.account"));
+            throw new AccountException(new ServiceError("repeatingAccountError", "Repeating Account data"), String.format("Repeating Parameter: request.account"));
         }
         
         if  (!accountRepository.save(account)){
@@ -49,14 +57,6 @@ public class LocalStorageAccountCreateHandler implements IAccountCreateHandler {
         System.out.println(account.toString());
 
         return new AccountCreateResponse(account.getLogin(),account.getToken());
-    }
-    
-    private boolean isAccountExist(Account account) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-    
-    private boolean createNewAccount(Account account) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
+    }   
     
 }
