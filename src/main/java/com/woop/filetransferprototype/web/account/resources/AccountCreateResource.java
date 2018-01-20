@@ -5,21 +5,22 @@
  */
 package com.woop.filetransferprototype.web.account.resources;
 
-import com.woop.filetransferprototype.cryptography.RandomString;
-import com.woop.filetransferprototype.cryptography.SHA256;
-import com.woop.filetransferprototype.cryptography.Token;
-import com.woop.filetransferprototype.local.entity.Account;
-import com.woop.filetransferprototype.local.entity.AccountData;
+import com.woop.filetransferprototype.local.log.Log;
 import com.woop.filetransferprototype.web.account.hadler.IAccountCreateHandler;
 import com.woop.filetransferprototype.web.account.hadler.LocalStorageAccountCreateHandler;
 import com.woop.filetransferprototype.web.account.requests.AccountCreateRequest;
 import com.woop.filetransferprototype.web.account.responses.AccountCreateResponse;
-import java.util.UUID;
+import java.util.HashMap;
+import java.util.Map;
+import javax.annotation.security.PermitAll;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -28,29 +29,49 @@ import javax.ws.rs.core.Response;
  * @author NoID
  */
 @Path("/")
+//@PermitAll
+//@RolesAllowed({"manager"})
 public class AccountCreateResource {
-    
-    
+
     private final IAccountCreateHandler accountCreateHandler;
-    
+
     public AccountCreateResource() {
-    this.accountCreateHandler = new LocalStorageAccountCreateHandler();
+        this.accountCreateHandler = new LocalStorageAccountCreateHandler();
     }
+
     
     
-    @POST
-    @Path("account/new/1.0")
-    @Consumes(MediaType.APPLICATION_JSON)
+    @GET
+    @Path("map")
+    @PermitAll
     @Produces(MediaType.APPLICATION_JSON)
-    public Response accountCreate(AccountData request) {
-        
-        String login = request.getLogin();
-        String password = request.getPassword();
-        String salt = RandomString.generateRandomString(60);
-        String token = Token.generateToken(password,salt);
-        
-        Account account = new Account(login,password,token,salt);
-        AccountCreateRequest accountRequest = new AccountCreateRequest(account);
+    public Response getRequestHeaders(@HeaderParam("token") String token,
+                                                @HeaderParam("content-type") String contentType) {
+        return Response
+                .status(200)
+                .entity(token + contentType)
+                .build();
+
+    }
+
+    @GET
+    @Path("hi")
+    @PermitAll
+    @Produces(MediaType.TEXT_PLAIN)
+    public Response hi() {
+        return Response
+                .status(200)
+                .entity("helloblet")
+                .build();
+    }
+
+    @GET
+    @Path("account/new/1.0")
+    @PermitAll
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response accountCreate(@HeaderParam("Authorization") String authorization) {
+        Log.log(AccountCreateResource.class.getSimpleName(), "Запрос получен");
+        AccountCreateRequest accountRequest = new AccountCreateRequest(authorization);
         AccountCreateResponse result = accountCreateHandler.handle(accountRequest);
         return Response
                 .status(200)

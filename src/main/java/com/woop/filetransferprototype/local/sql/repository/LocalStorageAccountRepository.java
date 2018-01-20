@@ -12,9 +12,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -36,7 +33,8 @@ public class LocalStorageAccountRepository implements IAccountRepository {
             String password = rs.getString(3);
             String token = rs.getString(4);
             String salt = rs.getString(5);
-            return new Account(id,login,password,token,salt);
+            String role = rs.getString(6);
+            return new Account(id,login,password,token,salt,role);
         } catch (SQLException ex) {
             return null;
         }
@@ -99,13 +97,14 @@ public class LocalStorageAccountRepository implements IAccountRepository {
     public boolean save(Account entity) {
         try {
             Connection connection = getSqliteConnection().getConnection();
-            String sql = "insert into accounts values ( ?, ?, ?, ?, ?)";
+            String sql = "insert into accounts values ( ?, ?, ?, ?, ?, ?)";
             PreparedStatement ps = connection.prepareStatement(sql);
             //ps.setInt(1,0);
             ps.setString(2,entity.getLogin());
             ps.setString(3,entity.getPassword());
             ps.setString(4,entity.getToken());
             ps.setString(5,entity.getSalt());
+            ps.setString(6, entity.getRole());
             ps.executeUpdate();
             ps.close();
             return true;
@@ -114,6 +113,21 @@ public class LocalStorageAccountRepository implements IAccountRepository {
         } 
     }
 
+    
+    public boolean remove(String login) {
+        try {
+            Connection connection = getSqliteConnection().getConnection();
+            String sql = "DELETE FROM accounts WHERE login = ?";
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, login);
+            ps.executeUpdate();
+            ps.close();
+            return true;
+        } catch (SQLException ex) {
+            return false;
+        }
+    }
+    
     public boolean remove(int id) {
         try {
             Connection connection = getSqliteConnection().getConnection();

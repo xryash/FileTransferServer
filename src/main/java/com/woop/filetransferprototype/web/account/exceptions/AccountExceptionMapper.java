@@ -6,6 +6,7 @@
 package com.woop.filetransferprototype.web.account.exceptions;
 
 import com.woop.filetransferprototype.errors.HttpServiceError;
+import com.woop.filetransferprototype.local.log.Log;
 import javax.ws.rs.core.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +23,7 @@ public class AccountExceptionMapper implements javax.ws.rs.ext.ExceptionMapper<A
     public Response toResponse(AccountException accountException) {
 
         if(logger.isErrorEnabled()) {
-            logger.error("An error occured", accountException);
+            logger.error("An error occurred", accountException);
         }
         HttpServiceError httpServiceError = accountException.getHttpServiceError();
 

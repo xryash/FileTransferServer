@@ -14,4 +14,5 @@ import com.woop.filetransferprototype.local.entity.Account;
 public interface IAccountRepository extends IRepository<Account>{
      Account getByToken(String token);
      Account getByLogin(String login);
+     Account getByLoginAndPassword(String login, String password);
 }

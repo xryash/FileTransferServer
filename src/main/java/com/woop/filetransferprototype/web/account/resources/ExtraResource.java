@@ -5,6 +5,7 @@
  */
 package com.woop.filetransferprototype.web.account.resources;
 
+import javax.annotation.security.PermitAll;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -38,6 +39,7 @@ public class ExtraResource {
     
     @GET
     @Path("page/upload")
+    @PermitAll
     @Consumes(MediaType.TEXT_HTML)
     public Response getPageUpload() {
         return Response.ok().entity(

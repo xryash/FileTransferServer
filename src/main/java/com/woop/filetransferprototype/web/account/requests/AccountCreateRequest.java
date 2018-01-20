@@ -6,6 +6,7 @@
 package com.woop.filetransferprototype.web.account.requests;
 
 import com.woop.filetransferprototype.local.entity.Account;
+import javax.ws.rs.core.HttpHeaders;
 
 /**
  *
@@ -13,15 +14,18 @@ import com.woop.filetransferprototype.local.entity.Account;
  */
 public class AccountCreateRequest {
 
-    private final Account account;
+    private final String authorization;
 
-    public AccountCreateRequest(Account account) {
-        this.account = account;
+    public AccountCreateRequest(String authorization) {
+        this.authorization = authorization;
     }
 
-    public Account getAccount() {
-        return account;
+    public String getAuthorization() {
+        return authorization;
     }
+
+    
+    
     
     
     

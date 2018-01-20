@@ -5,13 +5,20 @@
  */
 package com.woop.filetransferprototype.web.account.hadler;
 
+import com.woop.filetransferprototype.cryptography.RandomString;
+import com.woop.filetransferprototype.cryptography.Token;
 import com.woop.filetransferprototype.errors.ServiceError;
 import com.woop.filetransferprototype.local.entity.Account;
+import com.woop.filetransferprototype.local.log.Log;
 import com.woop.filetransferprototype.local.sql.repository.IAccountRepository;
 import com.woop.filetransferprototype.local.sql.repository.LocalStorageAccountRepository;
 import com.woop.filetransferprototype.web.account.exceptions.AccountException;
 import com.woop.filetransferprototype.web.account.requests.AccountCreateRequest;
 import com.woop.filetransferprototype.web.account.responses.AccountCreateResponse;
+import java.util.List;
+import java.util.StringTokenizer;
+import javax.ws.rs.core.MultivaluedMap;
+import org.glassfish.jersey.internal.util.Base64;
 
 /**
  *
@@ -20,35 +27,50 @@ import com.woop.filetransferprototype.web.account.responses.AccountCreateRespons
 public class LocalStorageAccountCreateHandler implements IAccountCreateHandler {
 
     private final IAccountRepository accountRepository;
+    private static final String AUTHENTICATION_SCHEME = "Basic";
     
     public LocalStorageAccountCreateHandler() {
         this.accountRepository = new LocalStorageAccountRepository();
     }
     
     
+    
     public AccountCreateResponse handle(AccountCreateRequest request) {
-     
+        Log.log(LocalStorageAccountCreateHandler.class.getSimpleName(), "Запрос обрабатывается");
+        
         if(request == null) {
             throw new AccountException(new ServiceError("missingAccountError", "Missing Account data"), String.format("Missing Parameter: request"));
         }
         
-        Account account = request.getAccount();
-
-        if(account == null) {
-            throw new AccountException(new ServiceError("missingAccountError", "Missing Account data"), String.format("Missing Parameter: request.account"));
+        if(request.getAuthorization() == null || request.getAuthorization().isEmpty()) {
+            throw new AccountException(new ServiceError("missingAccountError", "Missing Account data"), String.format("Missing Parameter: request.authorization"));
         }
         
-        if(account.getLogin() == null) {
-            throw new AccountException(new ServiceError("missingAccountError", "Missing Account data"), String.format("Missing Parameter: account.login"));
+        
+        String authorization = request.getAuthorization(); 
+        Log.log(LocalStorageAccountCreateHandler.class.getSimpleName(),authorization );
+        final String encodedUserPassword = authorization.replaceFirst(AUTHENTICATION_SCHEME + " ", "");
+        String usernameAndPassword = new String(Base64.decode(encodedUserPassword.getBytes()));
+        final StringTokenizer tokenizer = new StringTokenizer(usernameAndPassword, ":");
+        final String login = tokenizer.nextToken();
+        final String password = tokenizer.nextToken();
+        
+        if(login == null) {
+            throw new AccountException(new ServiceError("missingAccountError", "Missing Account data"), String.format("Missing Parameter: username"));
         }
         
-        if(account.getPassword() == null) {
-            throw new AccountException(new ServiceError("missingAccountError", "Missing Account data"), String.format("Missing Parameter: account.password"));
+        if(password == null) {
+            throw new AccountException(new ServiceError("missingAccountError", "Missing Account data"), String.format("Missing Parameter: (password"));
         }
         
-        if (accountRepository.getByLogin(account.getLogin()) != null){
+        if (accountRepository.getByLogin(login) != null){
             throw new AccountException(new ServiceError("repeatingAccountError", "Repeating Account data"), String.format("Repeating Parameter: request.account"));
         }
+        
+        String salt = RandomString.generateRandomString(60);
+        String token = Token.generateToken(password,salt);
+        String role = "USER";
+        Account account = new Account(login,password,token,salt,role);
         
         if  (!accountRepository.save(account)){
             throw new AccountException(new ServiceError("savingAccountError", "Error saving"), String.format("Saving Account failed"));

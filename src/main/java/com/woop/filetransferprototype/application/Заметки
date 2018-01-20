@@ -1,2 +1,4 @@
-1) Проверить метод getByLoginAndPassword
-2)Доделать LocalStorageAccountAuthenticationHandler
+1) Проверить метод getByLoginAndPassword +
+3)AuthenticationFilter
+4)LogFilter
+5)Provider

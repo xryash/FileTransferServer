@@ -16,8 +16,10 @@ import java.io.IOException;
 import java.net.URI;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.StringTokenizer;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
+import org.glassfish.jersey.internal.util.Base64;
 import org.glassfish.jersey.server.ResourceConfig;
 
 //import org.sqlite.SQLite
@@ -35,21 +37,46 @@ public class App {
     }
     
     public static void main(String[] args) throws IOException, InterruptedException, SQLException {
+            /*
+            String username = "vasya";
+            String password = "123";
+            System.out.println(username);
+            System.out.println(password);
+            String authorization = username + ":" + password;
+            System.out.println(authorization);
+            String coded =  "Basic " + new String(Base64.encode(authorization.getBytes()));
+            System.out.println(coded);
+            String encodedUserPassword = coded.replaceFirst("Basic"+ " ", "");
+            String usernameAndPassword = new String(Base64.decode(encodedUserPassword.getBytes()));;
+            final StringTokenizer tokenizer = new StringTokenizer(usernameAndPassword, ":");
+            username = tokenizer.nextToken();
+            password = tokenizer.nextToken();
+            System.out.println(username);
+            System.out.println(password);
+            **/
         
         
-        /*
+        /**
         String login = "igoresha";
         String password = "1234";
         String salt = RandomString.generateRandomString(60);
         String token = Token.generateToken(password,salt);
-        
-        Account account = new Account(login,password,token,salt);
+        String role = "ADMIN";
+        Account account = new Account(login,password,token,salt,role);
         System.out.println(account.toString());
         LocalStorageAccountRepository repository = new LocalStorageAccountRepository();
+        if (repository.remove("igoresha"))
+            System.out.println("Аккаунт удалён");   
         if (repository.save(account))
             System.out.println("Аккаунт сохранён");
-        System.out.println(repository.getByLogin("igoresha").toString());
-        **/
+        
+        System.out.println("getByLogin" + repository.getByLogin(login).toString());
+        System.out.println("getByToken" + repository.getByToken(token).toString());
+        System.out.println("getByLoginAndPassword" + repository.getByLoginAndPassword(login, password).toString());
+        */
+        
+        
+        
         
         
         System.out.println("App is starting....");

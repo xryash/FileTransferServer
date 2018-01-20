@@ -10,6 +10,7 @@ import com.woop.filetransferprototype.web.account.resources.AccountCreateResourc
 import com.woop.filetransferprototype.web.fileupload.exceptions.FileUploadExceptionMapper;
 import com.woop.filetransferprototype.web.account.resources.ExtraResource;
 import com.woop.filetransferprototype.web.fileupload.resources.FileUploadResource;
+import com.woop.filetransferprototype.web.provider.AuthenticationFilter;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 
@@ -25,7 +26,8 @@ public class ApplicationConfig extends ResourceConfig {
                 ExtraResource.class,
                 FileUploadExceptionMapper.class,
                 AccountExceptionMapper.class,
-                MultiPartFeature.class
+                MultiPartFeature.class,
+                AuthenticationFilter.class
         
         );
     }
