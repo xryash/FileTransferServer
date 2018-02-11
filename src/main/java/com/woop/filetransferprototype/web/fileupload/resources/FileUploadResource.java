@@ -12,14 +12,19 @@ import com.woop.filetransferprototype.local.entity.HttpFile;
 import com.woop.filetransferprototype.web.fileupload.hadler.IFileUploadHandler;
 import com.woop.filetransferprototype.web.fileupload.hadler.LocalStorageFileUploadHandler;
 import com.woop.filetransferprototype.local.provider.RootPathProvider;
+import java.io.IOException;
 import java.io.InputStream;
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 /**
@@ -28,29 +33,31 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
  */
 @Path("/")
 public class FileUploadResource {
-    
-    private RootPathProvider rootPathProvider() {
-        return new RootPathProvider("d:\\out\\");
-    }
-    
+        
     private final IFileUploadHandler fileUploadHandler;
 
+    @Context 
+    private SecurityContext sc;
+    
     public FileUploadResource() {
-        this.fileUploadHandler = new LocalStorageFileUploadHandler( rootPathProvider());
+        this.fileUploadHandler = new LocalStorageFileUploadHandler();
     };
     
     @POST
+    @RolesAllowed({"USER","ADMIN"})
     @Path("upload/1.0")
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Consumes(MediaType.MULTIPART_FORM_DATA )
     @Produces(MediaType.APPLICATION_JSON)
-    public Response fileUpload(
-                               @QueryParam("token") String token,
-                               @QueryParam("directory") String directory,
+    public Response fileUpload(                              
                                @FormDataParam("file") InputStream stream,
-                               @FormDataParam("file") FormDataContentDisposition fileDetail) {
-        
-        HttpFile httpFile = new HttpFile(fileDetail.getFileName(), stream);
-        FileUploadRequest fileUploadRequest = new FileUploadRequest(token, httpFile,directory);
+                               @FormDataParam("file") FormDataContentDisposition fileMetaData,
+                               @FormDataParam("directory") String directory ) {
+        System.out.println("Запрос получен");
+        String submittedFileName = fileMetaData.getFileName();
+        long size = fileMetaData.getSize();  
+        String login = sc.getUserPrincipal().getName();
+        HttpFile httpFile = new HttpFile(submittedFileName, stream ,directory ,size);
+        FileUploadRequest fileUploadRequest = new FileUploadRequest(httpFile,login);
         FileUploadResponse result = fileUploadHandler.handle(fileUploadRequest);
 
         return Response

@@ -6,20 +6,11 @@
 package com.woop.filetransferprototype.application;
 
 import com.woop.filetransferprototype.application.config.ApplicationConfig;
-import com.woop.filetransferprototype.cryptography.RandomString;
-import com.woop.filetransferprototype.cryptography.SHA256;
-import com.woop.filetransferprototype.cryptography.Token;
-import com.woop.filetransferprototype.local.entity.Account;
-import com.woop.filetransferprototype.local.sql.connection.SQLiteJDBCDriverConnection;
-import com.woop.filetransferprototype.local.sql.repository.LocalStorageAccountRepository;
 import java.io.IOException;
 import java.net.URI;
-import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.StringTokenizer;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
-import org.glassfish.jersey.internal.util.Base64;
 import org.glassfish.jersey.server.ResourceConfig;
 
 //import org.sqlite.SQLite
@@ -32,7 +23,7 @@ public class App {
     private static final URI BASE_URI = URI.create("http://192.168.1.7:8080/app/");
     private static final String DATABASE_URI = "jdbc:sqlite:D:/NetBeans 8.2/projects/FileTransferPrototype/src/main/resources/FileTransferDataBase.db";
     private static ResourceConfig getConfig() {
-        return new ApplicationConfig();
+            return new ApplicationConfig();
     
     }
     

@@ -10,17 +10,11 @@ import com.woop.filetransferprototype.web.account.hadler.IAccountCreateHandler;
 import com.woop.filetransferprototype.web.account.hadler.LocalStorageAccountCreateHandler;
 import com.woop.filetransferprototype.web.account.requests.AccountCreateRequest;
 import com.woop.filetransferprototype.web.account.responses.AccountCreateResponse;
-import java.util.HashMap;
-import java.util.Map;
 import javax.annotation.security.PermitAll;
-import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -29,8 +23,6 @@ import javax.ws.rs.core.Response;
  * @author NoID
  */
 @Path("/")
-//@PermitAll
-//@RolesAllowed({"manager"})
 public class AccountCreateResource {
 
     private final IAccountCreateHandler accountCreateHandler;
@@ -47,6 +39,8 @@ public class AccountCreateResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getRequestHeaders(@HeaderParam("token") String token,
                                                 @HeaderParam("content-type") String contentType) {
+        Log.log(AccountCreateResource.class.getSimpleName(), "token "+ token);
+        Log.log(AccountCreateResource.class.getSimpleName(), "content-type "+ contentType);
         return Response
                 .status(200)
                 .entity(token + contentType)
@@ -69,8 +63,9 @@ public class AccountCreateResource {
     @Path("account/new/1.0")
     @PermitAll
     @Produces(MediaType.APPLICATION_JSON)
-    public Response accountCreate(@HeaderParam("Authorization") String authorization) {
+    public Response accountCreate(@HeaderParam("AccData") String authorization) {
         Log.log(AccountCreateResource.class.getSimpleName(), "Запрос получен");
+        Log.log(AccountCreateResource.class.getSimpleName(), "AccData "+ authorization);
         AccountCreateRequest accountRequest = new AccountCreateRequest(authorization);
         AccountCreateResponse result = accountCreateHandler.handle(accountRequest);
         return Response

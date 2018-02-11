@@ -6,6 +6,7 @@
 package com.woop.filetransferprototype.local.sql.repository;
 
 import com.woop.filetransferprototype.local.entity.HttpFile;
+import com.woop.filetransferprototype.local.entity.LocalFile;
 import java.util.List;
 
 /**
@@ -14,19 +15,20 @@ import java.util.List;
  */
 public class LocalStorageFileRepository implements IFileRepository{
 
-    public HttpFile getById(int id) {
+    public LocalFile getById(int id) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public boolean save(HttpFile entity) {
+    public boolean save(LocalFile entity) {
+        return true;
+    //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public boolean remove(LocalFile entity) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public boolean remove(HttpFile entity) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    public List<HttpFile> GetAll() {
+    public List<LocalFile> GetAll() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

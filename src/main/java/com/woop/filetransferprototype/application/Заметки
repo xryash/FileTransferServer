@@ -1,4 +1,7 @@
 1) Проверить метод getByLoginAndPassword +
+2)Проверить создание аккаунтов +
 3)AuthenticationFilter
 4)LogFilter
 5)Provider
+6)шифровка ответа логина и токена
+7)verify account

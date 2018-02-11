@@ -15,4 +15,5 @@ public interface IAccountRepository extends IRepository<Account>{
      Account getByToken(String token);
      Account getByLogin(String login);
      Account getByLoginAndPassword(String login, String password);
+     Account getByLoginAndToken(String login, String token);           
 }

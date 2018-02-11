@@ -5,6 +5,8 @@
  */
 package com.woop.filetransferprototype.local.entity;
 
+import java.security.Principal;
+
 
 
 
@@ -12,7 +14,7 @@ package com.woop.filetransferprototype.local.entity;
  *
  * @author NoID
  */
-public class Account {
+public class Account implements Principal {
     
     private int id;
     private final String login;
@@ -42,10 +44,6 @@ public class Account {
         return id;
     }
 
-    public String getLogin() {
-        return login;
-    }
-
     public String getPassword() {
         return password;
     }
@@ -69,6 +67,10 @@ public class Account {
     @Override
     public String toString() {
         return "Account{" + "id=" + id + ", login=" + login + ", password=" + password + ", token=" + token + ", salt=" + salt + ", role=" + role + '}';
+    }
+
+    public String getName() {
+        return login;
     }
 
  

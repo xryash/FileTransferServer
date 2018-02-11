@@ -32,48 +32,77 @@ public class LocalStorageFileUploadHandler implements IFileUploadHandler  {
    private final IFileRepository fileRepository;
    private final IAccountRepository accountRepository;
 
-    public LocalStorageFileUploadHandler(RootPathProvider rootPathProvider) {
-        this.rootPathProvider = rootPathProvider;
+    public LocalStorageFileUploadHandler() {
+        this.rootPathProvider = new RootPathProvider();
         this.fileRepository = new LocalStorageFileRepository();
         this.accountRepository = new LocalStorageAccountRepository();
     }
     
     
     public FileUploadResponse handle(FileUploadRequest request) {
-        String token = request.getToken();
-        String directory = request.getDirectory();
-        HttpFile httpFile = request.getHttpFile();
-        Account account = accountRepository.getByToken(token);
+        //Размер файла
+        //регулярки
+        //хост
+        System.out.println("Запрос обрабатывается");
         
         if(request == null) 
             throw new FileUploadException(new ServiceError("missingFile", "Missing File data"), String.format("Missing Parameter: request"));
         
-        if(httpFile == null) 
-            throw new FileUploadException(new ServiceError("missingFile", "Missing File data"), String.format("Missing Parameter: request.httpFile"));
+        String login = request.getLogin();
         
-        if(token == null) 
-            throw new FileUploadException(new ServiceError("missingFile", "Missing File data"), String.format("Missing Parameter: request.token"));
+        if(login == null) 
+            throw new FileUploadException(new ServiceError("missingFile", "Missing File data"), String.format("Missing Parameter: request.login"));
         
-        if(directory == null) 
-            throw new FileUploadException(new ServiceError("missingFile", "Missing File data"), String.format("Missing Parameter: request.directory"));
+        HttpFile httpFile = request.getHttpFile();
         
-        if (account == null)
-            throw new FileUploadException(new ServiceError("verifyingTokenError", "Error verifying token"), String.format("Verifying Token failed"));
+        verifyHttpFile(httpFile);
         
         String targetFileName = UUID.randomUUID().toString();
-        String submittedFileName = httpFile.getSubmittedFileName();
+
+        Account account = accountRepository.getByLogin(login);
         int host = account.getId();
         
-        LocalFile localFile = new LocalFile(targetFileName,submittedFileName,host,directory);
+        LocalFile localFile = new LocalFile(targetFileName,host,httpFile.getSubmittedFileName(),httpFile.getStream(),httpFile.getDirectory(),httpFile.getSize());
         
-        internalWriteFile(httpFile.getStream(), targetFileName);
-
+        if (!fileRepository.save(localFile))
+            throw new FileUploadException(new ServiceError("savingFileError", "Error saving"), String.format("Saving File failed"));
+            
+        System.out.println("Всё ок");
+        internalWriteFile(localFile.getStream(), targetFileName);
+        
+        
         return new FileUploadResponse(targetFileName);
     }
 
     
+    private void verifyHttpFile(HttpFile httpFile) {
+        
+        if(httpFile == null) 
+            throw new FileUploadException(new ServiceError("missingFile", "Missing File data"), String.format("Missing Parameter: request.httpFile"));
+        
+        String directory = httpFile.getDirectory();
+        long size = httpFile.getSize();
+        String submittedFileName = httpFile.getSubmittedFileName();
+        InputStream stream = httpFile.getStream();
+        
+        if(directory == null) 
+            throw new FileUploadException(new ServiceError("missingFile", "Missing File data"), String.format("Missing Parameter: httpFile.directory"));
+        
+        if(size <= 0) 
+            throw new FileUploadException(new ServiceError("missingFile", "Missing File data"), String.format("Missing Parameter: httpFile.size"));
+        
+        if(submittedFileName == null) 
+            throw new FileUploadException(new ServiceError("missingFile", "Missing File data"), String.format("Missing Parameter: httpFile.submittedFileName"));
+        
+        if (stream == null)
+            throw new FileUploadException(new ServiceError("missingFile", "Missing File data"), String.format("Missing Parameter: httpFile.stream"));
+    }
+    
+    
+    
     private void internalWriteFile(InputStream stream, String fileName) {
         try {
+            
             Files.copy(stream, Paths.get(rootPathProvider.getRootPath(), fileName));
             //Files.copy(stream, target, options)
             

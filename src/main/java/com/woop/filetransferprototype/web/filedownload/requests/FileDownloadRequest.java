@@ -3,32 +3,31 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.woop.filetransferprototype.web.fileupload.requests;
-
-import com.woop.filetransferprototype.local.entity.HttpFile;
+package com.woop.filetransferprototype.web.filedownload.requests;
 
 /**
  *
  * @author NoID
  */
-public class FileUploadRequest {
-    private final HttpFile httpFile;
+public class FileDownloadRequest {
+    private final int id;
     private final String login;
 
-    public FileUploadRequest(HttpFile httpFile, String login) {
-        this.httpFile = httpFile;
+    public FileDownloadRequest(int id, String login) {
+        this.id = id;
         this.login = login;
     }
 
-    public HttpFile getHttpFile() {
-        return httpFile;
+    public int getId() {
+        return id;
     }
 
     public String getLogin() {
         return login;
     }
-
     
-
+    
+    
+    
     
 }

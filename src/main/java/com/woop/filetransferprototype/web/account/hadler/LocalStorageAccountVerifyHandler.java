@@ -5,16 +5,14 @@
  */
 package com.woop.filetransferprototype.web.account.hadler;
 
-import com.woop.filetransferprototype.cryptography.RandomString;
-import com.woop.filetransferprototype.cryptography.Token;
 import com.woop.filetransferprototype.errors.ServiceError;
 import com.woop.filetransferprototype.local.entity.Account;
 import com.woop.filetransferprototype.local.log.Log;
 import com.woop.filetransferprototype.local.sql.repository.IAccountRepository;
 import com.woop.filetransferprototype.local.sql.repository.LocalStorageAccountRepository;
 import com.woop.filetransferprototype.web.account.exceptions.AccountException;
-import com.woop.filetransferprototype.web.account.requests.AccountCreateRequest;
-import com.woop.filetransferprototype.web.account.responses.AccountCreateResponse;
+import com.woop.filetransferprototype.web.account.requests.AccountVerifyRequest;
+import com.woop.filetransferprototype.web.account.responses.AccountVerifyResponse;
 import java.util.StringTokenizer;
 import org.glassfish.jersey.internal.util.Base64;
 
@@ -22,19 +20,17 @@ import org.glassfish.jersey.internal.util.Base64;
  *
  * @author NoID
  */
-public class LocalStorageAccountCreateHandler implements IAccountCreateHandler {
+public class LocalStorageAccountVerifyHandler implements IAccountVerifyHandler {
 
     private final IAccountRepository accountRepository;
     private static final String AUTHENTICATION_SCHEME = "Basic";
     
-    public LocalStorageAccountCreateHandler() {
+    public LocalStorageAccountVerifyHandler() {
         this.accountRepository = new LocalStorageAccountRepository();
     }
     
-    
-    
-    public AccountCreateResponse handle(AccountCreateRequest request) {
-        Log.log(LocalStorageAccountCreateHandler.class.getSimpleName(), "Запрос обрабатывается");
+    public AccountVerifyResponse handle(AccountVerifyRequest request) {
+        Log.log(LocalStorageAccountVerifyHandler.class.getSimpleName(), "Запрос обрабатывается");
         
         if(request == null) {
             throw new AccountException(new ServiceError("missingAccountError", "Missing Account data"), String.format("Missing Parameter: request"));
@@ -43,7 +39,6 @@ public class LocalStorageAccountCreateHandler implements IAccountCreateHandler {
         if(request.getAuthorization() == null || request.getAuthorization().isEmpty()) {
             throw new AccountException(new ServiceError("missingAccountError", "Missing Account data"), String.format("Missing Parameter: request.authorization"));
         }
-        
         
         String authorization = request.getAuthorization(); 
         Log.log(LocalStorageAccountCreateHandler.class.getSimpleName(),authorization );
@@ -61,22 +56,16 @@ public class LocalStorageAccountCreateHandler implements IAccountCreateHandler {
             throw new AccountException(new ServiceError("missingAccountError", "Missing Account data"), String.format("Missing Parameter: password"));
         }
         
-        if (accountRepository.getByLogin(login) != null){
-            throw new AccountException(new ServiceError("repeatingAccountError", "Repeating Account data"), String.format("Repeating Parameter: request.account"));
-        }
+        Account account = accountRepository.getByLogin(login);
         
-        String salt = RandomString.generateRandomString(60);
-        String token = Token.generateToken(password,salt);
-        String role = "USER";
-        Account account = new Account(login,password,token,salt,role);
-        
-        if  (!accountRepository.save(account)){
-            throw new AccountException(new ServiceError("savingAccountError", "Error saving"), String.format("Saving Account failed"));
+        if(account == null) {
+            throw new AccountException(new ServiceError("NonexistentAccountError", "Nonexistent Account data"), String.format("Nonexistent Account"));
         }
-        Log.log(LocalStorageAccountCreateHandler.class.getSimpleName(), "Аккаунт сохранён в базу");
+        Log.log(LocalStorageAccountCreateHandler.class.getSimpleName(), "Аккаунт найден");
         Log.log(LocalStorageAccountCreateHandler.class.getSimpleName(), account.toString());
         
-        return new AccountCreateResponse(new String(Base64.encode(account.getToken().getBytes())));
-    }   
+        return new AccountVerifyResponse(new String(Base64.encode(account.getToken().getBytes())));
+        
+    }
     
 }

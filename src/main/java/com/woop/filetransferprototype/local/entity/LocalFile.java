@@ -5,44 +5,36 @@
  */
 package com.woop.filetransferprototype.local.entity;
 
+import java.io.InputStream;
+
 /**
  *
  * @author NoID
  */
-public class LocalFile {
-    private int id;
-    private final String UUID;
-    private final String submittedFileName;
+public class LocalFile extends HttpFile {
+    
+    
+    private final String targetFileName;
     private final int host;
     private int[] access;
-    private final String directory;
+    private int id;
 
-    public LocalFile(int id, String UUID, String submittedFileName, int host, int[] access, String directory) {
-        this.id = id;
-        this.UUID = UUID;
-        this.submittedFileName = submittedFileName;
+    public LocalFile(String targetFileName, int host, String submittedFileName, InputStream stream, String directory, long size) {
+        super(submittedFileName, stream, directory, size);
+        this.targetFileName = targetFileName;
+        this.host = host;
+    }
+
+    public LocalFile(String targetFileName, int host, int[] access, int id, String submittedFileName, InputStream stream, String directory, long size) {
+        super(submittedFileName, stream, directory, size);
+        this.targetFileName = targetFileName;
         this.host = host;
         this.access = access;
-        this.directory = directory;
+        this.id = id;
     }
 
-    public LocalFile(String UUID, String submittedFileName, int host, String directory) {
-        this.UUID = UUID;
-        this.submittedFileName = submittedFileName;
-        this.host = host;
-        this.directory = directory;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public String getUUID() {
-        return UUID;
-    }
-
-    public String getSubmittedFileName() {
-        return submittedFileName;
+    public String getTargetFileName() {
+        return targetFileName;
     }
 
     public int getHost() {
@@ -53,10 +45,14 @@ public class LocalFile {
         return access;
     }
 
-    public String getDirectory() {
-        return directory;
+    public int getId() {
+        return id;
+    }
+
+    @Override
+    public String toString() {
+        return "LocalFile{" + "UUID=" + targetFileName + ", host=" + host + ", access=" + access + ", id=" + id + '}';
     }
     
     
-
 }

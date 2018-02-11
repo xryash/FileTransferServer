@@ -94,13 +94,28 @@ public class LocalStorageAccountRepository implements IAccountRepository {
             }
     }
     
+    public Account getByLoginAndToken(String login, String token) {
+        try {
+                Connection connection = getSqliteConnection().getConnection();
+                String sql = "select * from accounts where login = ? and token = ?";
+                PreparedStatement ps = connection.prepareStatement(sql);
+                ps.setString(1, login);
+                ps.setString(2, token);
+                ResultSet rs = ps.executeQuery();
+                return assembleAccount(rs);
+            } catch (SQLException ex) {
+                return null;
+            }
+    }
+    
+    
     public boolean save(Account entity) {
         try {
             Connection connection = getSqliteConnection().getConnection();
             String sql = "insert into accounts values ( ?, ?, ?, ?, ?, ?)";
             PreparedStatement ps = connection.prepareStatement(sql);
             //ps.setInt(1,0);
-            ps.setString(2,entity.getLogin());
+            ps.setString(2,entity.getName());
             ps.setString(3,entity.getPassword());
             ps.setString(4,entity.getToken());
             ps.setString(5,entity.getSalt());
