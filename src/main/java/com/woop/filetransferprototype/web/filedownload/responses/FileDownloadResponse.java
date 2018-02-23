@@ -5,28 +5,26 @@
  */
 package com.woop.filetransferprototype.web.filedownload.responses;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.sun.jersey.multipart.MultiPart;
 import com.woop.filetransferprototype.local.entity.LocalFile;
 import java.io.File;
+import java.io.InputStream;
 
 /**
  *
  * @author NoID
  */
 public class FileDownloadResponse {
-    private final LocalFile localFile;
-    private final File file;
+    private final MultiPart multipartEntity;
+    private final String name;
 
-    public FileDownloadResponse(LocalFile localFile, File file) {
-        this.localFile = localFile;
-        this.file = file;
-    }
+    
+    
 
-    public LocalFile getLocalFile() {
-        return localFile;
-    }
-
-    public File getFile() {
-        return file;
+    @JsonProperty("name")
+    public String getName(){
+        return localFile.getSubmittedFileName();
     }
     
     

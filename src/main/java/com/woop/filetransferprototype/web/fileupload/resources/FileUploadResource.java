@@ -11,16 +11,12 @@ import com.woop.filetransferprototype.web.fileupload.responses.FileUploadRespons
 import com.woop.filetransferprototype.local.entity.HttpFile;
 import com.woop.filetransferprototype.web.fileupload.hadler.IFileUploadHandler;
 import com.woop.filetransferprototype.web.fileupload.hadler.LocalStorageFileUploadHandler;
-import com.woop.filetransferprototype.local.provider.RootPathProvider;
-import java.io.IOException;
 import java.io.InputStream;
-import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -59,7 +55,7 @@ public class FileUploadResource {
         HttpFile httpFile = new HttpFile(submittedFileName, stream ,directory ,size);
         FileUploadRequest fileUploadRequest = new FileUploadRequest(httpFile,login);
         FileUploadResponse result = fileUploadHandler.handle(fileUploadRequest);
-
+        
         return Response
                 .status(200)
                 .entity(result)

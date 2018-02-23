@@ -46,12 +46,12 @@ public class LocalStorageFileUploadHandler implements IFileUploadHandler  {
         System.out.println("Запрос обрабатывается");
         
         if(request == null) 
-            throw new FileUploadException(new ServiceError("missingFile", "Missing File data"), String.format("Missing Parameter: request"));
+            throw new FileUploadException(new ServiceError("missingFile", "Missing File data request"), String.format("Missing Parameter: request"));
         
         String login = request.getLogin();
         
         if(login == null) 
-            throw new FileUploadException(new ServiceError("missingFile", "Missing File data"), String.format("Missing Parameter: request.login"));
+            throw new FileUploadException(new ServiceError("missingFile", "Missing File data request.login"), String.format("Missing Parameter: request.login"));
         
         HttpFile httpFile = request.getHttpFile();
         
@@ -78,7 +78,7 @@ public class LocalStorageFileUploadHandler implements IFileUploadHandler  {
     private void verifyHttpFile(HttpFile httpFile) {
         
         if(httpFile == null) 
-            throw new FileUploadException(new ServiceError("missingFile", "Missing File data"), String.format("Missing Parameter: request.httpFile"));
+            throw new FileUploadException(new ServiceError("missingFile", "Missing File data request.httpFile"), String.format("Missing Parameter: request.httpFile"));
         
         String directory = httpFile.getDirectory();
         long size = httpFile.getSize();
@@ -86,16 +86,16 @@ public class LocalStorageFileUploadHandler implements IFileUploadHandler  {
         InputStream stream = httpFile.getStream();
         
         if(directory == null) 
-            throw new FileUploadException(new ServiceError("missingFile", "Missing File data"), String.format("Missing Parameter: httpFile.directory"));
+            throw new FileUploadException(new ServiceError("missingFile", "Missing File data httpFile.directory"), String.format("Missing Parameter: httpFile.directory"));
         
         if(size <= 0) 
-            throw new FileUploadException(new ServiceError("missingFile", "Missing File data"), String.format("Missing Parameter: httpFile.size"));
+            throw new FileUploadException(new ServiceError("missingFile", "Missing File data httpFile.size"), String.format("Missing Parameter: httpFile.size"));
         
         if(submittedFileName == null) 
-            throw new FileUploadException(new ServiceError("missingFile", "Missing File data"), String.format("Missing Parameter: httpFile.submittedFileName"));
+            throw new FileUploadException(new ServiceError("missingFile", "Missing File data httpFile.submittedFileName"), String.format("Missing Parameter: httpFile.submittedFileName"));
         
         if (stream == null)
-            throw new FileUploadException(new ServiceError("missingFile", "Missing File data"), String.format("Missing Parameter: httpFile.stream"));
+            throw new FileUploadException(new ServiceError("missingFile", "Missing File data httpFile.stream"), String.format("Missing Parameter: httpFile.stream"));
     }
     
     
