@@ -49,10 +49,11 @@ public class FileUploadResource {
     @Path("upload/1.0")
     @Consumes(MediaType.MULTIPART_FORM_DATA )
     @Produces(MediaType.APPLICATION_JSON)
-    public Response fileUpload(@HeaderParam("Content-Length") long size,                             
+    public Response fileUpload(                           
                                @FormDataParam("file") InputStream stream,
                                @FormDataParam("file") FormDataContentDisposition fileMetaData,
-                               @FormDataParam("directory") String directory) {
+                               @FormDataParam("directory") String directory,
+                               @FormDataParam("size") long size) {
         System.out.println("Запрос получен");
         String submittedFileName = fileMetaData.getFileName();
         //long size =  fileMetaData.getSize();
