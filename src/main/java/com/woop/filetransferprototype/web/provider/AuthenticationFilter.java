@@ -12,35 +12,20 @@ import com.woop.filetransferprototype.local.sql.repository.IAccountRepository;
 import com.woop.filetransferprototype.local.sql.repository.LocalStorageAccountRepository;
 import com.woop.filetransferprototype.web.provider.exceptions.ProviderException;
 import com.woop.filetransferprototype.web.provider.securitycontext.ApplicationSecurityContext;
-import java.io.IOException;
 import java.lang.reflect.Method;
-import java.security.Principal;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
 import javax.annotation.Priority;
 
 import javax.annotation.security.DenyAll;
 import javax.annotation.security.PermitAll;
-import javax.annotation.security.RolesAllowed;
-import javax.ws.rs.ClientErrorException;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
-import javax.ws.rs.container.PreMatching;
 import javax.ws.rs.container.ResourceInfo;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Form;
-import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.ext.Provider;
 import org.glassfish.jersey.internal.util.Base64;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
