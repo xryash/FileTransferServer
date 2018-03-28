@@ -5,35 +5,109 @@
  */
 package com.woop.filetransferprototype.local.sql.repository;
 
-import com.woop.filetransferprototype.local.entity.HttpFile;
 import com.woop.filetransferprototype.local.entity.LocalFile;
+import com.woop.filetransferprototype.local.sql.connection.ISQLiteConnection;
+import com.woop.filetransferprototype.local.sql.connection.SQLiteJDBCDriverConnection;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  *
  * @author NoID
  */
-public class LocalStorageFileRepository implements IFileRepository{
+public class LocalStorageFileRepository implements IFileRepository {
+
+    private ISQLiteConnection getSqliteConnection() {
+        return new SQLiteJDBCDriverConnection();
+    }
 
     public LocalFile getById(int id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+            Connection connection = getSqliteConnection().getConnection();
+            String sql = "select * from localfiles where id = ?";
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            return parseFiles(rs).get(0);
+        } catch (SQLException ex) {
+            return null;
+        }
     }
 
     public boolean save(LocalFile entity) {
-        return true;
-    //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+            System.out.println(entity.toString());
+            Connection connection = getSqliteConnection().getConnection();
+            String sql = "insert into localfiles values ( ?, ?, ?, ?, ?)";
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(2, entity.getTargetFileName());
+            ps.setString(3, entity.getSubmittedFileName());
+            ps.setInt(4, entity.getHost());
+            ps.setString(5, entity.getDirectory());
+            ps.executeUpdate();
+            ps.close();
+            return true;
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+            return false;
+        }
     }
 
     public boolean remove(LocalFile entity) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public List<LocalFile> GetAll() {
+    public List<LocalFile> getFilesByHost(int host) {
+        try {
+            Connection connection = getSqliteConnection().getConnection();
+            String sql = "select * from localfiles where host = ?";
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, host);
+            ResultSet rs = ps.executeQuery();
+            return parseFiles(rs);
+        } catch (SQLException ex) {
+            return null;
+        }
+    }
+
+    private List<LocalFile> parseFiles(ResultSet rs) {
+        try {
+            List<LocalFile> list = new ArrayList<LocalFile>();
+            while (rs.next()) {
+                int id = rs.getInt(1);
+                String targetFileName = rs.getString(2);
+                String submittedFileName = rs.getString(3);
+                int host = rs.getInt(4);
+                String directory = rs.getString(5);
+                LocalFile file = new LocalFile(id, host, targetFileName,submittedFileName, directory);
+                list.add(file);
+            }
+            return list;
+        } catch (SQLException ex) {
+            return null;
+        }
+    }
+
+    public List<LocalFile> getAll() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     public boolean remove(int id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+            Connection connection = getSqliteConnection().getConnection();
+            String sql = "DELETE FROM localfiles WHERE id = ?";
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, id);
+            ps.executeUpdate();
+            ps.close();
+            return true;
+        } catch (SQLException ex) {
+            return false;
+        }
     }
 
 }
