@@ -14,7 +14,7 @@ import java.security.Principal;
  *
  * @author NoID
  */
-public class Account implements Principal {
+public class Account {
     
     private int id;
     private final String login;
@@ -69,7 +69,7 @@ public class Account implements Principal {
         return "Account{" + "id=" + id + ", login=" + login + ", password=" + password + ", token=" + token + ", salt=" + salt + ", role=" + role + '}';
     }
 
-    public String getName() {
+    public String getLogin() {
         return login;
     }
 

@@ -14,7 +14,6 @@ import com.woop.filetransferprototype.web.fileupload.hadler.LocalStorageFileUplo
 import java.io.InputStream;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -22,7 +21,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
-import org.glassfish.jersey.inject.hk2.RequestContext;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 /**
@@ -56,9 +54,8 @@ public class FileUploadResource {
                                @FormDataParam("size") long size) {
         System.out.println("Запрос получен");
         String submittedFileName = fileMetaData.getFileName();
-        //long size =  fileMetaData.getSize();
         String login = sc.getUserPrincipal().getName();
-        
+        System.out.println(login);
         HttpFile httpFile = new HttpFile(submittedFileName, stream ,directory ,size);
         System.out.println(httpFile.toString());
         FileUploadRequest fileUploadRequest = new FileUploadRequest(httpFile,login);

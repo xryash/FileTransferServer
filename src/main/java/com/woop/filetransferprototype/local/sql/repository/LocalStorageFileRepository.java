@@ -6,7 +6,7 @@
 package com.woop.filetransferprototype.local.sql.repository;
 
 import com.woop.filetransferprototype.local.entity.LocalFile;
-import com.woop.filetransferprototype.local.sql.connection.ISQLiteConnection;
+
 import com.woop.filetransferprototype.local.sql.connection.SQLiteJDBCDriverConnection;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -21,13 +21,13 @@ import java.util.List;
  */
 public class LocalStorageFileRepository implements IFileRepository {
 
-    private ISQLiteConnection getSqliteConnection() {
-        return new SQLiteJDBCDriverConnection();
+    private Connection getSqliteConnection() {
+           return SQLiteJDBCDriverConnection.getInstance().getConnection();
     }
 
     public LocalFile getById(int id) {
         try {
-            Connection connection = getSqliteConnection().getConnection();
+            Connection connection = getSqliteConnection();
             String sql = "select * from localfiles where id = ?";
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setInt(1, id);
@@ -41,7 +41,7 @@ public class LocalStorageFileRepository implements IFileRepository {
     public boolean save(LocalFile entity) {
         try {
             System.out.println(entity.toString());
-            Connection connection = getSqliteConnection().getConnection();
+            Connection connection = getSqliteConnection();
             String sql = "insert into localfiles values ( ?, ?, ?, ?, ?)";
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setString(2, entity.getTargetFileName());
@@ -63,7 +63,7 @@ public class LocalStorageFileRepository implements IFileRepository {
 
     public List<LocalFile> getFilesByHost(int host) {
         try {
-            Connection connection = getSqliteConnection().getConnection();
+            Connection connection = getSqliteConnection();
             String sql = "select * from localfiles where host = ?";
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setInt(1, host);
@@ -98,7 +98,7 @@ public class LocalStorageFileRepository implements IFileRepository {
 
     public boolean remove(int id) {
         try {
-            Connection connection = getSqliteConnection().getConnection();
+            Connection connection = getSqliteConnection();
             String sql = "DELETE FROM localfiles WHERE id = ?";
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setInt(1, id);

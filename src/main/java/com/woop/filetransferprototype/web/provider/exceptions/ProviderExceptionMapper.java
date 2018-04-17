@@ -7,6 +7,7 @@ package com.woop.filetransferprototype.web.provider.exceptions;
 
 import com.woop.filetransferprototype.errors.HttpServiceError;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.ext.Provider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

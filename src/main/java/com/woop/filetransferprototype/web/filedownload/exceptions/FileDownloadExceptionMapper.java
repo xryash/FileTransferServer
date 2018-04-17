@@ -6,7 +6,6 @@
 package com.woop.filetransferprototype.web.filedownload.exceptions;
 
 import com.woop.filetransferprototype.errors.HttpServiceError;
-import com.woop.filetransferprototype.web.fileupload.exceptions.FileUploadException;
 import javax.ws.rs.core.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

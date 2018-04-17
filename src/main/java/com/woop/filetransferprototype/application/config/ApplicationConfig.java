@@ -10,9 +10,12 @@ import com.woop.filetransferprototype.web.account.resources.AccountCreateResourc
 import com.woop.filetransferprototype.web.account.resources.AccountVerifyResource;
 import com.woop.filetransferprototype.web.fileupload.exceptions.FileUploadExceptionMapper;
 import com.woop.filetransferprototype.web.account.resources.ExtraResource;
+import com.woop.filetransferprototype.web.filedelete.resource.FileDeleteResource;
+import com.woop.filetransferprototype.web.filedownload.exceptions.FileDownloadExceptionMapper;
+import com.woop.filetransferprototype.web.filedownload.resources.FileDownloadResource;
 import com.woop.filetransferprototype.web.fileupload.resources.FileUploadResource;
-import com.woop.filetransferprototype.web.provider.AuthenticationFilter;
 import com.woop.filetransferprototype.web.provider.LogFilter;
+import com.woop.filetransferprototype.web.provider.NewAuthenticationFilter;
 import com.woop.filetransferprototype.web.provider.exceptions.ProviderExceptionMapper;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -25,17 +28,20 @@ import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
 
 public class ApplicationConfig extends ResourceConfig {
     public ApplicationConfig() {
-        super(FileUploadResource.class,
+        super(  FileUploadResource.class,
+                FileDownloadResource.class,
                 AccountCreateResource.class,
                 AccountVerifyResource.class,
+                FileDeleteResource.class,
                 ExtraResource.class,
                 LogFilter.class,
                 RolesAllowedDynamicFeature.class,
                 FileUploadExceptionMapper.class,
+                FileDownloadExceptionMapper.class,
                 AccountExceptionMapper.class,
                 ProviderExceptionMapper.class,
                 MultiPartFeature.class,
-                AuthenticationFilter.class
+                NewAuthenticationFilter.class
         
         );
     }

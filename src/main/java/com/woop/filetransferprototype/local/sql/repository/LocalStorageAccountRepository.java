@@ -6,7 +6,6 @@
 package com.woop.filetransferprototype.local.sql.repository;
 
 import com.woop.filetransferprototype.local.entity.Account;
-import com.woop.filetransferprototype.local.sql.connection.ISQLiteConnection;
 import com.woop.filetransferprototype.local.sql.connection.SQLiteJDBCDriverConnection;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -21,11 +20,11 @@ public class LocalStorageAccountRepository implements IAccountRepository {
 
     
 
-    private ISQLiteConnection getSqliteConnection() {
-            return new SQLiteJDBCDriverConnection();
+    private Connection getSqliteConnection() {
+           return SQLiteJDBCDriverConnection.getInstance().getConnection();
     }
     
-    private Account assembleAccount(ResultSet rs) {
+    private Account parseAccount(ResultSet rs) {
         try {
             rs.next();
             int id = rs.getInt(1);
@@ -42,12 +41,12 @@ public class LocalStorageAccountRepository implements IAccountRepository {
     
     public Account getById(int id) {
         try {
-            Connection connection = getSqliteConnection().getConnection();
+            Connection connection = getSqliteConnection();
             String sql = "select * from accounts where id = ?";
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
-            return assembleAccount(rs);
+            return parseAccount(rs);
         } catch (SQLException ex) {
             return null;
         }
@@ -55,12 +54,12 @@ public class LocalStorageAccountRepository implements IAccountRepository {
 
     public Account getByLogin(String login) {
         try {
-            Connection connection = getSqliteConnection().getConnection();
+            Connection connection = getSqliteConnection();
             String sql = "select * from accounts where login = ?";
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setString(1, login);
             ResultSet rs = ps.executeQuery();
-            return assembleAccount(rs);
+            return parseAccount(rs);
         } catch (SQLException ex) {
             return null;
         }
@@ -68,12 +67,12 @@ public class LocalStorageAccountRepository implements IAccountRepository {
     
     public Account getByToken(String token) {
         try {
-            Connection connection = getSqliteConnection().getConnection();
+            Connection connection = getSqliteConnection();
             String sql = "select * from accounts where token = ?";
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setString(1, token);
             ResultSet rs = ps.executeQuery();
-            return assembleAccount(rs);
+            return parseAccount(rs);
         } catch (SQLException ex) {
             return null;
         }
@@ -82,13 +81,13 @@ public class LocalStorageAccountRepository implements IAccountRepository {
     
     public Account getByLoginAndPassword(String login, String password) {
         try {
-                Connection connection = getSqliteConnection().getConnection();
+                Connection connection = getSqliteConnection();
                 String sql = "select * from accounts where login = ? and password = ?";
                 PreparedStatement ps = connection.prepareStatement(sql);
                 ps.setString(1, login);
                 ps.setString(2, password);
                 ResultSet rs = ps.executeQuery();
-                return assembleAccount(rs);
+                return parseAccount(rs);
             } catch (SQLException ex) {
                 return null;
             }
@@ -96,13 +95,13 @@ public class LocalStorageAccountRepository implements IAccountRepository {
     
     public Account getByLoginAndToken(String login, String token) {
         try {
-                Connection connection = getSqliteConnection().getConnection();
+                Connection connection = getSqliteConnection();
                 String sql = "select * from accounts where login = ? and token = ?";
                 PreparedStatement ps = connection.prepareStatement(sql);
                 ps.setString(1, login);
                 ps.setString(2, token);
                 ResultSet rs = ps.executeQuery();
-                return assembleAccount(rs);
+                return parseAccount(rs);
             } catch (SQLException ex) {
                 return null;
             }
@@ -111,11 +110,10 @@ public class LocalStorageAccountRepository implements IAccountRepository {
     
     public boolean save(Account entity) {
         try {
-            Connection connection = getSqliteConnection().getConnection();
+            Connection connection = getSqliteConnection();
             String sql = "insert into accounts values ( ?, ?, ?, ?, ?, ?)";
             PreparedStatement ps = connection.prepareStatement(sql);
-            //ps.setInt(1,0);
-            ps.setString(2,entity.getName());
+            ps.setString(2,entity.getLogin());
             ps.setString(3,entity.getPassword());
             ps.setString(4,entity.getToken());
             ps.setString(5,entity.getSalt());
@@ -131,7 +129,7 @@ public class LocalStorageAccountRepository implements IAccountRepository {
     
     public boolean remove(String login) {
         try {
-            Connection connection = getSqliteConnection().getConnection();
+            Connection connection = getSqliteConnection();
             String sql = "DELETE FROM accounts WHERE login = ?";
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setString(1, login);
@@ -145,7 +143,7 @@ public class LocalStorageAccountRepository implements IAccountRepository {
     
     public boolean remove(int id) {
         try {
-            Connection connection = getSqliteConnection().getConnection();
+            Connection connection = getSqliteConnection();
             String sql = "DELETE FROM accounts WHERE id = ?";
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setInt(1, id);

@@ -11,6 +11,7 @@ import com.woop.filetransferprototype.local.log.Log;
 import com.woop.filetransferprototype.local.sql.repository.IAccountRepository;
 import com.woop.filetransferprototype.local.sql.repository.LocalStorageAccountRepository;
 import com.woop.filetransferprototype.web.provider.exceptions.ProviderException;
+import com.woop.filetransferprototype.web.provider.exceptions.ProviderExceptionMapper;
 import com.woop.filetransferprototype.web.provider.securitycontext.ApplicationSecurityContext;
 import java.lang.reflect.Method;
 import java.util.Set;
@@ -19,11 +20,13 @@ import javax.annotation.Priority;
 
 import javax.annotation.security.DenyAll;
 import javax.annotation.security.PermitAll;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.ResourceInfo;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.ext.Provider;
 import org.glassfish.jersey.internal.util.Base64;
 
@@ -55,17 +58,21 @@ public class AuthenticationFilter implements ContainerRequestFilter {
     public void filter(ContainerRequestContext requestContext) {
         Log.log(AuthenticationFilter.class.getSimpleName(), "Начало фильтрации...");
         Method method = resourceInfo.getResourceMethod();
-
         if (!method.isAnnotationPresent(PermitAll.class)) {
             if (method.isAnnotationPresent(DenyAll.class)) {
-                throw new ProviderException(Response.Status.FORBIDDEN.getStatusCode(), new ServiceError("missing", "Missing File data"), String.format("Missing Parameter: request.httpFile"));
+                
+                requestContext.abortWith(new ProviderExceptionMapper().toResponse(new ProviderException(Response.Status.FORBIDDEN.getStatusCode(), new ServiceError("missing", "Missing File data"), String.format("Missing Parameter: request.httpFile"))));
+                
             }
 
             final String authorization = requestContext.getHeaderString(AUTHORIZATION_PROPERTY);
             if (authorization == null || authorization.isEmpty()) {
-                //requestContext.abortWith(ACCESS_DENIED);
-                //return;
-                throw new ProviderException(Response.Status.UNAUTHORIZED.getStatusCode(), new ServiceError("missing", "Missing File data"), String.format("Missing Parameter: request.httpFile"));
+                
+
+                System.out.println("authorization is null");
+                
+                requestContext.abortWith(new ProviderExceptionMapper().toResponse(new ProviderException(Response.Status.UNAUTHORIZED.getStatusCode(), new ServiceError("missing", "Missing File data"), String.format("Missing Parameter: request.httpFile"))));
+                return;
             }
 
             final String encodedUserPassword = authorization.replaceFirst(AUTHENTICATION_SCHEME + " ", "");
@@ -78,15 +85,19 @@ public class AuthenticationFilter implements ContainerRequestFilter {
             if (login == null || login.isEmpty() || token == null || token.isEmpty()) {
                 //requestContext.abortWith(ACCESS_DENIED);
                 //return;
-                throw new ProviderException(Response.Status.UNAUTHORIZED.getStatusCode(), new ServiceError("missing", "Missing File data"), String.format("Missing Parameter: request.httpFile"));
+                
+                requestContext.abortWith(new ProviderExceptionMapper().toResponse( new ProviderException(Response.Status.UNAUTHORIZED.getStatusCode(), new ServiceError("missing", "Missing File data"), String.format("Missing Parameter: request.httpFile"))));
             }
 
             Account account = accountRepository.getByLoginAndToken(login, token);
+            
             if (account == null) {
                 //requestContext.abortWith(ACCESS_DENIED);
                 //return;
+                System.out.println("account is null");
                 throw new ProviderException(Response.Status.UNAUTHORIZED.getStatusCode(), new ServiceError("missing", "Missing File data"), String.format("Missing Parameter: request.httpFile"));
             }
+            
             /*            
             if(method.isAnnotationPresent(RolesAllowed.class)){
                 RolesAllowed rolesAnnotation = method.getAnnotation(RolesAllowed.class);
@@ -100,7 +111,9 @@ public class AuthenticationFilter implements ContainerRequestFilter {
             } 
              */
             String scheme = requestContext.getUriInfo().getRequestUri().getScheme();
-            requestContext.setSecurityContext(new ApplicationSecurityContext(account, scheme));
+            SecurityContext oldContext = requestContext.getSecurityContext();    
+            requestContext.setSecurityContext(new ApplicationSecurityContext(account, scheme,oldContext.isSecure()));
+
 
         }
 

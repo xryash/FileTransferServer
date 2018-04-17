@@ -17,15 +17,18 @@ public class ApplicationSecurityContext implements SecurityContext {
     
     private final Account account;
     private final String scheme;
+    private final boolean secure;
+    
 
-    public ApplicationSecurityContext(Account account, String scheme) {
+    public ApplicationSecurityContext(Account account, String scheme, boolean secure) {
         this.account = account;
         this.scheme = scheme;
+        this.secure = secure;
     }
     
     
     public Principal getUserPrincipal() {
-        return account;
+        return (Principal) account;
     }
 
     public boolean isUserInRole(String s) {
@@ -36,7 +39,7 @@ public class ApplicationSecurityContext implements SecurityContext {
     }
 
     public boolean isSecure() {
-        return "https".equals(this.scheme);
+        return secure;
     }
 
     public String getAuthenticationScheme() {

@@ -5,54 +5,70 @@
  */
 package com.woop.filetransferprototype.local.entity;
 
-import java.io.InputStream;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  *
  * @author NoID
  */
-public class LocalFile extends HttpFile {
+public class LocalFile  {
     
-    
-    private final String targetFileName;
-    private final int host;
-    private int[] access;
     private int id;
+    private int host;
+    private String targetFileName;
+    private String submittedFileName;
+    private String directory;
+    
+    
+    
 
-    public LocalFile(String targetFileName, int host, String submittedFileName, InputStream stream, String directory, long size) {
-        super(submittedFileName, stream, directory, size);
-        this.targetFileName = targetFileName;
-        this.host = host;
-    }
-
-    public LocalFile(String targetFileName, int host, int[] access, int id, String submittedFileName, InputStream stream, String directory, long size) {
-        super(submittedFileName, stream, directory, size);
-        this.targetFileName = targetFileName;
-        this.host = host;
-        this.access = access;
+    public LocalFile(int id, int host, String targetFileName,  String submittedFileName, String directory) {
         this.id = id;
+        this.host = host;
+        this.targetFileName = targetFileName;
+        this.submittedFileName = submittedFileName;
+        this.directory = directory;
+        
     }
 
+    public LocalFile(int host, String targetFileName,  String submittedFileName, String directory) {
+        this.host = host;
+        this.targetFileName = targetFileName;
+        this.submittedFileName = submittedFileName;
+        this.directory = directory;
+    }
+
+    @JsonProperty("targetFileName")
     public String getTargetFileName() {
         return targetFileName;
     }
 
+    @JsonProperty("host")
     public int getHost() {
         return host;
     }
 
-    public int[] getAccess() {
-        return access;
-    }
-
+    @JsonProperty("id")
     public int getId() {
         return id;
     }
 
+    @JsonProperty("submittedFileName")
+    public String getSubmittedFileName() {
+        return submittedFileName;
+    }
+
+    @JsonProperty("directory")
+    public String getDirectory() {
+        return directory;
+    }
+
     @Override
     public String toString() {
-        return "LocalFile{" + "UUID=" + targetFileName + ", host=" + host + ", access=" + access + ", id=" + id + '}';
+        return "LocalFile{" + "id=" + id + ", host=" + host + ", targetFileName=" + targetFileName + ", submittedFileName=" + submittedFileName + ", directory=" + directory + '}';
     }
+
+
     
     
 }

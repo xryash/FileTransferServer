@@ -3,36 +3,33 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.woop.filetransferprototype.web.filedownload.requests;
+package com.woop.filetransferprototype.web.filedelete.requests;
 
 /**
  *
  * @author NoID
  */
-public class FileDownloadRequest {
-    private final int id;
+public class FileDeleteRequest {
     private final String login;
+    private final int id;
 
-    public FileDownloadRequest(int id, String login) {
-        this.id = id;
+    public FileDeleteRequest(String login, int id) {
         this.login = login;
-    }
-
-    public int getId() {
-        return id;
+        this.id = id;
     }
 
     public String getLogin() {
         return login;
     }
 
+    public int getId() {
+        return id;
+    }
+
     @Override
     public String toString() {
-        return "FileDownloadRequest{" + "id=" + id + ", login=" + login + '}';
+        return "FileDeleteRequest{" + "login=" + login + ", id=" + id + '}';
     }
-    
-    
-    
     
     
 }

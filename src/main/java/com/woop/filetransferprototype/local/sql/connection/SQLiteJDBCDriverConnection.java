@@ -15,11 +15,21 @@ import java.util.logging.Logger;
  *
  * @author NoID
  */
-public class SQLiteJDBCDriverConnection implements ISQLiteConnection {
-    private final String DATABASE_URI = "jdbc:sqlite:D:/NetBeans 8.2/projects/FileTransferPrototype/src/main/resources/FileTransferDataBase.db";
+public class SQLiteJDBCDriverConnection  {
+    private final static String DATABASE_URI = "jdbc:sqlite:D:/NetBeans 8.2/projects/FileTransferPrototype/src/main/resources/FileTransferDataBase.db";
     private final Connection connection;
+    public static SQLiteJDBCDriverConnection instance; 
     
-    public SQLiteJDBCDriverConnection(){
+    public static synchronized SQLiteJDBCDriverConnection getInstance() {
+		if (instance == null) {
+			instance = new SQLiteJDBCDriverConnection();
+		}
+		return instance;
+	}
+    
+    
+    
+    private SQLiteJDBCDriverConnection(){
             this.connection = createConnection();
         
     }
@@ -34,7 +44,6 @@ public class SQLiteJDBCDriverConnection implements ISQLiteConnection {
         return connection;
     }
 
-    @Override
     public Connection getConnection() {
         return connection;
     }
