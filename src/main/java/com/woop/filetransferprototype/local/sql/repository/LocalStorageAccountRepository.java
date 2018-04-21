@@ -11,6 +11,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -154,4 +156,20 @@ public class LocalStorageAccountRepository implements IAccountRepository {
             return false;
         }
     }
+    
+    public boolean changePassword(String login, String password) {
+        try {
+            Connection connection = getSqliteConnection();
+            String sql = "UPDATE accounts SET password = ? WHERE login = ?";
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, password);
+            ps.setString(2, login);
+            ps.executeUpdate();
+            ps.close();
+            return true;
+        } catch (SQLException ex) {
+            return false;
+        }
+    }
+    
 }

@@ -24,41 +24,7 @@ import javax.ws.rs.core.Response;
  */
 @Path("/")
 public class AccountCreateResource {
-
-    private final IAccountCreateHandler accountCreateHandler;
-
-    public AccountCreateResource() {
-        this.accountCreateHandler = new LocalStorageAccountCreateHandler();
-    }
-
     
-    
-    @GET
-    @Path("map")
-    @PermitAll
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getRequestHeaders(@HeaderParam("token") String token,
-                                                @HeaderParam("content-type") String contentType) {
-        Log.log(AccountCreateResource.class.getSimpleName(), "token "+ token);
-        Log.log(AccountCreateResource.class.getSimpleName(), "content-type "+ contentType);
-        return Response
-                .status(200)
-                .entity(token + contentType)
-                .build();
-
-    }
-
-    @GET
-    @Path("hi")
-    @PermitAll
-    @Produces(MediaType.TEXT_PLAIN)
-    public Response hi() {
-        return Response
-                .status(200)
-                .entity("helloblet")
-                .build();
-    }
-
     @GET
     @Path("account/new/1.0")
     @PermitAll
@@ -67,6 +33,7 @@ public class AccountCreateResource {
         Log.log(AccountCreateResource.class.getSimpleName(), "Запрос получен");
         Log.log(AccountCreateResource.class.getSimpleName(), "AccData "+ authorization);
         AccountCreateRequest accountRequest = new AccountCreateRequest(authorization);
+        LocalStorageAccountCreateHandler accountCreateHandler = new LocalStorageAccountCreateHandler();
         AccountCreateResponse result = accountCreateHandler.handle(accountRequest);
         return Response
                 .status(200)

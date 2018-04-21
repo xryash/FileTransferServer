@@ -37,6 +37,10 @@ public class ExtraResource {
                 .build();
     }
     
+    
+    
+    
+    
     @GET
     @Path("page/upload")
     @PermitAll

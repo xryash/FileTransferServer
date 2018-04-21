@@ -28,7 +28,8 @@ public class App {
     
     }
     
-    public static void main(String[] args) throws IOException, InterruptedException, SQLException {      
+    public static void main(String[] args) throws IOException, InterruptedException, SQLException {     
+        
         BASE_URI = URI.create("http://" + Inet4Address.getLocalHost().getHostAddress() +  ":8080/app/");
         DATABASE_URI = "jdbc:sqlite:D:/NetBeans 8.2/projects/FileTransferPrototype/src/main/resources/FileTransferDataBase.db";
         System.out.println("App is starting....");

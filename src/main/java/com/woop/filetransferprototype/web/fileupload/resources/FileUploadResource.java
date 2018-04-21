@@ -55,7 +55,6 @@ public class FileUploadResource {
         System.out.println("Запрос получен");
         String submittedFileName = fileMetaData.getFileName();
         String login = sc.getUserPrincipal().getName();
-        System.out.println(login);
         HttpFile httpFile = new HttpFile(submittedFileName, stream ,directory ,size);
         System.out.println(httpFile.toString());
         FileUploadRequest fileUploadRequest = new FileUploadRequest(httpFile,login);

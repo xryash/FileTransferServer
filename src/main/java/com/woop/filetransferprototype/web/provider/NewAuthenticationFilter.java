@@ -10,8 +10,6 @@ import com.woop.filetransferprototype.local.entity.Account;
 import com.woop.filetransferprototype.local.sql.repository.IAccountRepository;
 import com.woop.filetransferprototype.local.sql.repository.LocalStorageAccountRepository;
 import com.woop.filetransferprototype.web.provider.exceptions.ProviderException;
-import com.woop.filetransferprototype.web.provider.exceptions.ProviderExceptionMapper;
-import java.io.IOException;
 import java.lang.reflect.Method;
 import java.security.Principal;
 import java.util.StringTokenizer;
@@ -58,8 +56,8 @@ public class NewAuthenticationFilter implements ContainerRequestFilter {
                 System.out.println("authorization is null");
                 throw new ProviderException(
                             Response.Status.UNAUTHORIZED.getStatusCode(),
-                            new ServiceError("missing", "Missing File data"),   
-                            String.format("Missing Parameter: request.httpFile"));
+                            new ServiceError("UNAUTHORIZED", "UNAUTHORIZED"),   
+                            String.format("UNAUTHORIZED"));
             }
         
         
@@ -75,8 +73,8 @@ public class NewAuthenticationFilter implements ContainerRequestFilter {
                 System.out.println("account is null");
                 throw new ProviderException(
                         Response.Status.UNAUTHORIZED.getStatusCode(), 
-                        new ServiceError("missing", "Missing File data"), 
-                        String.format("Missing Parameter: request.httpFile"));
+                        new ServiceError("UNAUTHORIZED", "UNAUTHORIZED"), 
+                        String.format("UNAUTHORIZED"));
             }
 
         final SecurityContext securityContext
