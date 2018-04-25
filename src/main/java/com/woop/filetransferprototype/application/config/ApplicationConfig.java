@@ -10,6 +10,7 @@ import com.woop.filetransferprototype.web.account.resources.AccountCreateResourc
 import com.woop.filetransferprototype.web.account.resources.AccountVerifyResource;
 import com.woop.filetransferprototype.web.fileupload.exceptions.FileUploadExceptionMapper;
 import com.woop.filetransferprototype.web.account.resources.ExtraResource;
+import com.woop.filetransferprototype.web.account.resources.PasswordResource;
 import com.woop.filetransferprototype.web.filedelete.resource.FileDeleteResource;
 import com.woop.filetransferprototype.web.filedownload.exceptions.FileDownloadExceptionMapper;
 import com.woop.filetransferprototype.web.filedownload.resources.FileDownloadResource;
@@ -33,7 +34,7 @@ public class ApplicationConfig extends ResourceConfig {
                 AccountCreateResource.class,
                 AccountVerifyResource.class,
                 FileDeleteResource.class,
-                ExtraResource.class,
+                PasswordResource.class,
                 LogFilter.class,
                 RolesAllowedDynamicFeature.class,
                 FileUploadExceptionMapper.class,

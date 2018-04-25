@@ -38,7 +38,7 @@ public class PasswordHandler {
         }
         
         String decoded = new String(Base64.decode(newpassword.getBytes()));
-        
+        System.out.println("decoded " + decoded);
         Account account = accountRepository.getByLogin(login);
         
         if(account == null) {

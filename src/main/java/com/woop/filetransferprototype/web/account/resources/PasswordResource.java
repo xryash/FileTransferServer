@@ -6,7 +6,6 @@
 package com.woop.filetransferprototype.web.account.resources;
 
 import com.woop.filetransferprototype.web.account.hadler.PasswordHandler;
-import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -21,13 +20,14 @@ import javax.ws.rs.core.SecurityContext;
  *
  * @author NoID
  */
+@Path("/")
 public class PasswordResource {
     
     @Context 
     private SecurityContext sc;
     
     @GET
-    @Path("account/new/1.0")
+    @Path("account/password/1.0")
     @RolesAllowed({"USER","ADMIN"})
     @Produces(MediaType.APPLICATION_JSON)
     public Response changePassword(@QueryParam("new") String newpassword) {
@@ -35,8 +35,8 @@ public class PasswordResource {
         String login = sc.getUserPrincipal().getName();
         
         PasswordHandler handler = new PasswordHandler();
-        Response response = handler.handle(login,newpassword);
-        return response;
+        Response result = handler.handle(login,newpassword);
+        return result;
     
     }
     

@@ -51,7 +51,9 @@ public class FileDeleteHandler {
         }
         
         int fileId = request.getId();
+        System.out.println("fileId" + fileId);
         LocalFile localFile = fileRepository.getById(fileId);
+        
 
         if (localFile == null) {
             throw new FileDownloadException(new ServiceError("missingData", "Missing File data"), String.format("Missing Parameter: request.localFile"));
@@ -63,14 +65,21 @@ public class FileDeleteHandler {
         }
         
         File file = new File(rootPathProvider.getRootPath() + localFile.getTargetFileName());
+        System.out.println(rootPathProvider.getRootPath() + localFile.getTargetFileName());
         
         if (file == null) {
             throw new FileDownloadException(new ServiceError("MissingFile", "Missing File data"), String.format("Missing File"));
         }
         
-        if(!file.delete()){
-            throw new FileDownloadException(new ServiceError("MissingFile", "Cannot delete file"), String.format("Missing File"));
+        if(!fileRepository.remove(fileId)){
+            throw new FileDownloadException(new ServiceError("MissingFile", "Cannot delete file from database"), String.format("Missing File"));
         }
+        
+        if(!file.delete()){
+            throw new FileDownloadException(new ServiceError("MissingFile", "Cannot delete file from local storage"), String.format("Missing File"));
+        }
+        
+        System.out.println("Файл удалён");
         
         return Response.ok().build();
     }

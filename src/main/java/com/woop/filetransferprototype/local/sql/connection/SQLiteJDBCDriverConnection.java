@@ -15,30 +15,37 @@ import java.util.logging.Logger;
  *
  * @author NoID
  */
-public class SQLiteJDBCDriverConnection  {
+public class SQLiteJDBCDriverConnection {
+
     private final static String DATABASE_URI = "jdbc:sqlite:D:/NetBeans 8.2/projects/FileTransferPrototype/src/main/resources/FileTransferDataBase.db";
     private final Connection connection;
-    public static SQLiteJDBCDriverConnection instance; 
-    
+    public static SQLiteJDBCDriverConnection instance;
+
     public static synchronized SQLiteJDBCDriverConnection getInstance() {
-		if (instance == null) {
-			instance = new SQLiteJDBCDriverConnection();
-		}
-		return instance;
-	}
-    
-    
-    
-    private SQLiteJDBCDriverConnection(){
-            this.connection = createConnection();
-        
+        if (instance == null) {
+            instance = new SQLiteJDBCDriverConnection();
+        }
+        return instance;
     }
 
+    private SQLiteJDBCDriverConnection() {
+        this.connection = createConnection();
+
+    }
+    /**
+    private String getDataBasePath() {
+        ClassLoader classLoader = getClass().getClassLoader();
+        String resource = classLoader.getResource("/FileTransferDataBase.db").getPath();
+        System.out.println(resource);
+        return "jdbc:sqlite:" +resource;
+    }
+    **/
+    
     private Connection createConnection() {
         Connection connection = null;
         try {
             connection = DriverManager.getConnection(DATABASE_URI);
-                    } catch (SQLException ex) {
+        } catch (SQLException ex) {
             Logger.getLogger(SQLiteJDBCDriverConnection.class.getName()).log(Level.SEVERE, null, ex);
         }
         return connection;
@@ -47,8 +54,5 @@ public class SQLiteJDBCDriverConnection  {
     public Connection getConnection() {
         return connection;
     }
-    
-    
-    
-    
+
 }
