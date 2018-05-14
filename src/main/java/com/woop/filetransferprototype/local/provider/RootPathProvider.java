@@ -10,7 +10,7 @@ package com.woop.filetransferprototype.local.provider;
  * @author NoID
  */
 public class RootPathProvider implements IRootPathProvider{
-    private final String ROOT_PATH = "d:\\out\\";
+    private final String ROOT_PATH = "d:\\FileTransfer\\out\\";
     private final String path;
 
     public RootPathProvider() {

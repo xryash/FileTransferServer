@@ -17,7 +17,7 @@ import java.util.logging.Logger;
  */
 public class SQLiteJDBCDriverConnection {
 
-    private final static String DATABASE_URI = "jdbc:sqlite:D:/NetBeans 8.2/projects/FileTransferPrototype/src/main/resources/FileTransferDataBase.db";
+    private final static String DATABASE_URI = "jdbc:sqlite:D:/FileTransfer/FileTransferDataBase.db";
     private final Connection connection;
     public static SQLiteJDBCDriverConnection instance;
 
